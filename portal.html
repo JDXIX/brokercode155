@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Configuración para móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Metadatos -->
+  <meta name="keywords" content="portal, cliente, seguros, V & F Seguros">
+  <meta name="description" content="Portal de Cliente de V & F Seguros para gestionar pólizas, documentos, pagos y seguimiento de siniestros.">
+  <meta name="author" content="V & F Seguros">
+  <title>V & F Seguros - Portal de Cliente</title>
+  
+  <!-- Hoja de estilos del slider -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css">
+  <!-- CSS central de Bootstrap -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,500|Poppins:400,700&amp;display=swap" rel="stylesheet">
+  <!-- Estilos personalizados -->
+  <link href="css/style.css" rel="stylesheet">
+  <!-- Estilo responsivo -->
+  <link href="css/responsive.css" rel="stylesheet">
+  
+  <!-- Incluir jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <style>
+    .portal-nav { margin-bottom: 20px; }
+    .portal-content { margin-top: 20px; }
+    .btn-pdf { margin-top: 15px; }
+    /* Vista previa para documentos */
+    #pdfPreview { width:100%; height:400px; border:none; display:none; margin-top:15px; }
+    /* Campos condicionales en el modal de pagos */
+    .payment-extra { display: none; }
+  </style>
+</head>
+<body class="sub_page">
+  <!-- Cabecera -->
+  <div class="hero_area">
+    <header class="header_section">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+              <a class="navbar-brand" href="index.html">
+                <span>V & F Seguros</span>
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" 
+                      data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                      aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="d-flex flex-column flex-lg-row align-items-center">
+                  <ul class="navbar-nav">
+                    <!-- Enlace a Inicio del Portal -->
+                    <li class="nav-item active">
+                      <a class="nav-link" href="portal.html">Inicio <span class="sr-only">(actual)</span></a>
+                    </li>
+                    <!-- Menú de Usuario -->
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Bienvenido, <span id="userNameDisplay">Usuario</span>
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="userMenu">
+                        <a class="dropdown-item" href="portal.html#polizas">Mis Pólizas</a>
+                        <a class="dropdown-item" href="portal.html#documentos">Mis Documentos</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" id="btnLogout">Cerrar Sesión</a>
+                      </div>
+                    </li>
+                  </ul>
+                  <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                    <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+                  </form>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+  <!-- Fin de la Cabecera -->
+
+  <!-- Contenido del Portal -->
+  <section class="portal-section layout_padding">
+    <div class="container">
+      <h2 id="userGreeting">Bienvenido, Usuario</h2>
+      <p>Desde este portal, puedes gestionar tus pólizas, ver documentos, realizar pagos y dar seguimiento a siniestros.</p>
+      
+      <!-- Navegación del Portal: Tabs -->
+      <ul class="nav nav-tabs portal-nav" id="portalTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="polizas-tab" data-toggle="tab" href="#polizas" role="tab" aria-controls="polizas" aria-selected="true">Mis Pólizas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="documentos-tab" data-toggle="tab" href="#documentos" role="tab" aria-controls="documentos" aria-selected="false">Documentos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="pagos-tab" data-toggle="tab" href="#pagos" role="tab" aria-controls="pagos" aria-selected="false">Pagos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="siniestros-tab" data-toggle="tab" href="#siniestros" role="tab" aria-controls="siniestros" aria-selected="false">Siniestros</a>
+        </li>
+      </ul>
+      
+      <!-- Contenido de cada Tab -->
+      <div class="tab-content portal-content" id="portalTabContent">
+        <!-- MIS PÓLIZAS -->
+        <div class="tab-pane fade show active" id="polizas" role="tabpanel" aria-labelledby="polizas-tab">
+          <h3>Mis Pólizas</h3>
+          <p>A continuación se muestran las pólizas que has contratado. Haz clic en "Ver Detalles" para conocer más información y generar un PDF con los detalles completos.</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Número de Póliza</th>
+                <th>Tipo de Seguro</th>
+                <th>Fecha de Inicio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPolizas">
+              <tr>
+                <td>ABC123</td>
+                <td>Seguro de Auto</td>
+                <td>2025-01-01</td>
+                <td>Activa</td>
+                <td>
+                  <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalPoliza" data-poliza="ABC123">Ver Detalles</button>
+                </td>
+              </tr>
+              <tr>
+                <td>XYZ789</td>
+                <td>Seguro de Viaje</td>
+                <td>2025-02-15</td>
+                <td>Activa</td>
+                <td>
+                  <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalPoliza" data-poliza="XYZ789">Ver Detalles</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center">
+            <button class="btn btn-secondary btn-pdf" onclick="generarPDFPolizas()">Generar Reporte PDF General</button>
+          </div>
+        </div>
+        
+        <!-- DOCUMENTOS -->
+        <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
+          <h3>Documentos</h3>
+          <p>Descarga o visualiza el PDF de tus documentos.</p>
+          <ul class="list-group" id="listaDocumentos">
+            <li class="list-group-item">
+              Póliza de Seguro de Auto (PDF)
+              <button class="btn btn-sm btn-outline-secondary float-right" onclick="vistaPreviaPDFDocumento('Póliza de Seguro de Auto')">Vista Previa</button>
+              <button class="btn btn-sm btn-outline-secondary float-right mr-2" onclick="generarPDFDocumento('Póliza de Seguro de Auto')">Descargar</button>
+            </li>
+            <li class="list-group-item">
+              Recibo de Pago - Seguro de Viaje (PDF)
+              <button class="btn btn-sm btn-outline-secondary float-right" onclick="vistaPreviaPDFDocumento('Recibo de Pago - Seguro de Viaje')">Vista Previa</button>
+              <button class="btn btn-sm btn-outline-secondary float-right mr-2" onclick="generarPDFDocumento('Recibo de Pago - Seguro de Viaje')">Descargar</button>
+            </li>
+          </ul>
+          <!-- Modal para vista previa de documentos -->
+          <div class="modal fade" id="modalDocumentoPreview" tabindex="-1" role="dialog" aria-labelledby="modalDocumentoPreviewLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalDocumentoPreviewLabel">Vista Previa del Documento</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <iframe id="pdfPreview" src="" style="width:100%; height:400px; border:none; display:none;"></iframe>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ocultarVistaPreviaPDF()">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- PAGOS -->
+        <div class="tab-pane fade" id="pagos" role="tabpanel" aria-labelledby="pagos-tab">
+          <h3>Pagos</h3>
+          <p>Aquí puedes ver tu historial de pagos y realizar un nuevo pago para una póliza.</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Fecha de Pago</th>
+                <th>Póliza</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPagos">
+              <tr>
+                <td>2025-03-01</td>
+                <td>ABC123 - Seguro de Auto</td>
+                <td>$200</td>
+                <td>Tarjeta - xxxx-xxxx-xxxx-1234</td>
+                <td>Exitoso</td>
+              </tr>
+              <tr>
+                <td>2025-04-01</td>
+                <td>XYZ789 - Seguro de Viaje</td>
+                <td>$200</td>
+                <td>Transferencia - Cuenta 987654321</td>
+                <td>Exitoso</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center mt-3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalPago">Realizar Nuevo Pago</button>
+          </div>
+          <div class="text-center mt-3">
+            <button class="btn btn-secondary btn-pdf" onclick="generarPDFPagos()">Generar Historial de Pagos PDF</button>
+          </div>
+        </div>
+        
+        <!-- SINIESTROS -->
+        <div class="tab-pane fade" id="siniestros" role="tabpanel" aria-labelledby="siniestros-tab">
+          <h3>Siniestros</h3>
+          <p>Aquí puedes dar seguimiento a los siniestros reportados y reportar nuevos siniestros.</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID Siniestro</th>
+                <th>Descripción</th>
+                <th>Fecha Reporte</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaSiniestros">
+              <tr>
+                <td>SIN001</td>
+                <td>Accidente menor de auto</td>
+                <td>2025-05-10</td>
+                <td>En Proceso</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center mt-3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalSiniestro">Reportar Siniestro</button>
+          </div>
+          <div class="text-center mt-3">
+            <button class="btn btn-secondary btn-pdf" onclick="generarPDFSiniestros()">Generar Reporte de Siniestros PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Fin del Contenido del Portal -->
+
+  <!-- Modal para Ver Detalles de Póliza (sin botón Vista Previa) -->
+  <div class="modal fade" id="modalPoliza" tabindex="-1" role="dialog" aria-labelledby="modalPolizaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalPolizaLabel">Detalles de Póliza</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="detallePoliza">Información detallada de la póliza.</p>
+          <div class="text-center mt-2">
+            <button class="btn btn-secondary" onclick="generarPDFPoliza()">Descargar PDF</button>
+          </div>
+          <!-- Iframe para vista previa (se usa en Documentos) -->
+          <iframe id="pdfPreview" src="" style="width:100%; height:400px; border:none; display:none;"></iframe>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ocultarVistaPreviaPDF()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Realizar Nuevo Pago -->
+  <div class="modal fade" id="modalPago" tabindex="-1" role="dialog" aria-labelledby="modalPagoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form id="pagoForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalPagoLabel">Realizar Nuevo Pago</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Seleccionar la póliza a pagar -->
+            <div class="form-group">
+              <label for="pagoPoliza">Póliza a Pagar</label>
+              <select class="form-control" id="pagoPoliza" required>
+                <option value="">Seleccione una póliza</option>
+                <option value="ABC123 - Seguro de Auto">ABC123 - Seguro de Auto</option>
+                <option value="XYZ789 - Seguro de Viaje">XYZ789 - Seguro de Viaje</option>
+              </select>
+            </div>
+            <!-- Monto a pagar (mínimo $50) -->
+            <div class="form-group">
+              <label for="pagoMonto">Monto ($50 mínimo)</label>
+              <input type="number" class="form-control" id="pagoMonto" placeholder="Ingresa el monto" min="50" required>
+            </div>
+            <!-- Método de Pago -->
+            <div class="form-group">
+              <label for="pagoMetodo">Método de Pago</label>
+              <select class="form-control" id="pagoMetodo" required>
+                <option value="">Selecciona un método</option>
+                <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                <option value="transferencia">Transferencia Bancaria</option>
+              </select>
+            </div>
+            <!-- Campos extra para Tarjeta -->
+            <div id="tarjetaFields" class="payment-extra">
+              <div class="form-group">
+                <label for="tarjetaNumero">Número de Tarjeta</label>
+                <input type="text" class="form-control" id="tarjetaNumero" placeholder="xxxx-xxxx-xxxx-xxxx">
+              </div>
+              <div class="form-group">
+                <label for="tarjetaExpiracion">Fecha de Expiración</label>
+                <input type="month" class="form-control" id="tarjetaExpiracion">
+              </div>
+              <div class="form-group">
+                <label for="tarjetaCVV">CVV</label>
+                <input type="text" class="form-control" id="tarjetaCVV" placeholder="xxx">
+              </div>
+            </div>
+            <!-- Campo extra para Transferencia -->
+            <div id="transferenciaFields" class="payment-extra">
+              <div class="form-group">
+                <label for="transferenciaCuenta">Número de Cuenta</label>
+                <input type="text" class="form-control" id="transferenciaCuenta" placeholder="Número de cuenta bancaria">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Procesar Pago</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="limpiarCamposPago()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Reportar Siniestro -->
+  <div class="modal fade" id="modalSiniestro" tabindex="-1" role="dialog" aria-labelledby="modalSiniestroLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form id="siniestroForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalSiniestroLabel">Reportar Siniestro</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="siniestroDescripcion">Descripción</label>
+              <textarea class="form-control" id="siniestroDescripcion" rows="3" placeholder="Describe el siniestro" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="siniestroFecha">Fecha del Siniestro</label>
+              <input type="date" class="form-control" id="siniestroFecha" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer General -->
+  <div class="footer_bg">
+    <section class="info_section layout_padding2-bottom">
+      <div class="container">
+        <h3>V & F Seguros</h3>
+      </div>
+      <div class="container info_content">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="d-flex"><h5>Enlaces Útiles</h5></div>
+            <ul>
+              <li><a href="nosotros.html">Sobre Nosotros</a></li>
+              <li><a href="servicios.html">Servicios</a></li>
+              <li><a href="contacto.html">Contacto</a></li>
+              <li><a href="cotizador.html">Cotizador</a></li>
+              <li><a href="ingresar.html">Ingresar</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex"><h5>Contacto</h5></div>
+            <ul>
+              <li><a href="tel:+593912345678">Teléfono: +593 912345678</a></li>
+              <li><a href="mailto:info@vyfseguros.com">Correo: info@vyfseguros.com</a></li>
+              <li><a href="#">Oficinas</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex"><h5>Acceso Rápido</h5></div>
+            <ul>
+              <li><a href="cotizador.html">Cotizador</a></li>
+              <li><a href="servicios.html">Servicios</a></li>
+              <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center align-items-lg-baseline mt-3">
+          <div class="social-box">
+            <a href="#"><img src="images/fb.png" alt="Facebook"></a>
+            <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+            <a href="#"><img src="images/linkedin1.png" alt="LinkedIn"></a>
+            <a href="#"><img src="images/instagram1.png" alt="Instagram"></a>
+          </div>
+          <div class="form_container mt-3">
+            <form action="#">
+              <label for="subscribeMail">Boletín Informativo</label>
+              <input type="email" placeholder="Ingresa tu correo" id="subscribeMail">
+              <button type="submit">Suscribirse</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="container-fluid footer_section">
+      <p>© 2025 Todos los Derechos Reservados por <a href="#">V & F Seguros</a></p>
+    </section>
+  </div>
+  <!-- Fin del Footer General -->
+
+  <!-- Scripts -->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  
+  <!-- Script para manejar la sesión del usuario -->
+  <script>
+    // Recuperar el nombre del usuario desde localStorage (simulación)
+    const userName = localStorage.getItem('userName') || 'Usuario';
+    document.getElementById('userGreeting').textContent = `Bienvenido, ${userName}`;
+    document.getElementById('userNameDisplay').textContent = userName;
+
+    document.getElementById('btnLogout').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Cerrando sesión...');
+      localStorage.removeItem('userName');
+      window.location.href = 'ingresar.html';
+    });
+  </script>
+  
+  <!-- Script para manejo de modales, generación de PDFs y lógica de Pagos -->
+  <script>
+    // FUNCIONES DE AYUDA PARA DISEÑO DE PDF
+    function addHeaderAndFooter(doc, documentTitle) {
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      
+      // Encabezado
+      doc.setFillColor(0, 66, 126); // Azul corporativo
+      doc.rect(0, 0, pageWidth, 30, 'F');
+      try { doc.addImage('images/logo.png', 'PNG', 5, 5, 20, 20); } catch(e){ console.log(e); }
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("V & F Seguros", pageWidth / 2, 15, { align: "center" });
+      doc.setFontSize(12);
+      doc.text(documentTitle, pageWidth / 2, 25, { align: "center" });
+      const fecha = new Date().toLocaleDateString();
+      doc.setFontSize(10);
+      doc.text(`Fecha de Emisión: ${fecha}`, pageWidth - 10, 15, { align: "right" });
+      
+      // Pie de Página
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      const footerY = pageHeight - 20;
+      doc.text("V & F Seguros | Tel: +593 912345678 | www.vyfseguros.com", pageWidth / 2, footerY, { align: "center" });
+      doc.text("Confidencial - No distribuir sin autorización", pageWidth / 2, footerY + 5, { align: "center" });
+    }
+    
+    function addWatermark(doc) {
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      try { doc.setGState(new doc.GState({ opacity: 0.1 })); } catch(e){}
+      const watermarkWidth = 50, watermarkHeight = 50;
+      const watermarkX = (pageWidth - watermarkWidth) / 2;
+      const watermarkY = (pageHeight - watermarkHeight) / 2;
+      try { doc.addImage('images/logo.png', 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight); } catch(e){}
+      try { doc.setGState(new doc.GState({ opacity: 1 })); } catch(e){}
+    }
+
+    // MODIFICACIONES EN "MIS PÓLIZAS"
+    $('#modalPoliza').on('show.bs.modal', function (event) {
+      const button = $(event.relatedTarget);
+      const poliza = button.data('poliza');
+      const modal = $(this);
+      modal.find('#detallePoliza').text(`Detalles de la póliza ${poliza}:
+- Cobertura: Integral
+- Vigencia: 2025-2026
+- Beneficios: Asistencia 24/7, etc.
+
+CONDICIONES GENERALES
+
+ART. 1 - DISPOSICIONES FUNDAMENTALES:
+1) Las partes contratantes se someten a la presente póliza y a las disposiciones de las leyes vigentes cuando ello es admisible. En caso de no coincidir las Condiciones Generales con las Particulares, se estará a lo que dispongan estas últimas. La póliza entra en vigencia en la fecha establecida en dichas Condiciones Particulares.
+2) Esta póliza ha sido extendida por la Compañía sobre la base de las declaraciones suscritas por el Contratante o los Asegurados Principales en sus respectivas solicitudes. Toda declaración o reticencia de circunstancias conocidas por el Contratante o por el Asegurado Principal, aún hechas de buena fe, que a juicio de peritos hubieran impedido el contrato o la aceptación de los seguros individuales, o habrán modificado las condiciones de los mismos, si la Compañía hubiese sido cerciorada del verdadero estado del riesgo, hace nulo el contrato o los certificados individuales de los asegurados, según el caso.
+      
+Este Contrato se conviene en virtud de la solicitud presentada por el Asegurado y del compromiso de abonar las primas que se establecen en las Condiciones Particulares.
+      
+Todas las cláusulas y condiciones impresas o escritas por la Compañía en esta Póliza integran el presente Contrato.
+      
+ART. 2 - DEFINICIONES: Se entiende por:
+a) Contratante o Tomador: A la persona física o jurídica tomadora de la póliza que suscribe la solicitud y el respectivo contrato de Seguro.
+b) Asegurado Titular o Principal: Asegurado individual que haya aprobado los requisitos de selección determinados por el Asegurador y que a la fecha de vigencia no hubiera superado la edad establecida en las Condiciones Particulares.
+c) Asegurado Familiar: A los miembros primarios de la familia del Asegurado Titular o Principal.
+d) Miembros de la Familia: 1) Al cónyuge legal que conviva con el Asegurado Principal. 2) A los hijos, matrimoniales o extramatrimoniales reconocidos, del Asegurado Principal o del Cónyuge, y a los hijos adoptivos del Asegurado Principal, siempre y cuando dichos hijos sean solteros, no emancipados, tengan más de 9 días y menos de 18 años de edad y compartan el hogar del Asegurado Principal.
+e) Asegurado: Al Asegurado Titular y a los Asegurados Familiares.
+      
+`);
+      $('#pdfPreview').hide().attr('src', '');
+    });
+
+    // Función para generar y descargar PDF de una Póliza
+    function generarPDFPoliza() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Detalle de Póliza');
+      addWatermark(doc);
+      const detalle = document.getElementById('detallePoliza').textContent;
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(detalle, 180);
+      doc.text(lines, 10, 40);
+      doc.save("Detalle_Póliza.pdf");
+    }
+
+    // Función para generar PDF de Mis Pólizas (Reporte General)
+    function generarPDFPolizas() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Reporte de Pólizas');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("1. Póliza: ABC123 - Seguro de Auto - Activa", 10, 40);
+      doc.text("2. Póliza: XYZ789 - Seguro de Viaje - Activa", 10, 50);
+      doc.save("Reporte_Pólizas.pdf");
+    }
+
+    // MODIFICACIONES EN "DOCUMENTOS"
+    function generarPDFDocumento(documento) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, documento);
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("Contenido simulado del documento " + documento, 10, 40);
+      doc.save(documento.replace(/ /g, "_") + ".pdf");
+    }
+
+    function vistaPreviaPDFDocumento(documento) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, documento + " - Vista Previa");
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("Contenido simulado del documento " + documento, 10, 40);
+      const dataUriString = doc.output('datauristring');
+      $('#pdfPreview').attr('src', dataUriString).show();
+      $('#modalDocumentoPreview').modal('show');
+    }
+
+    // MODIFICACIONES EN "PAGOS"
+    function generarPDFPagos() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Historial de Pagos');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const rows = document.querySelectorAll('#tablaPagos tr');
+      let y = 40;
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if(cells.length > 0) {
+          const texto = `${index + 1}. ${cells[0].innerText} | ${cells[1].innerText} | ${cells[2].innerText} | ${cells[3].innerText} | ${cells[4].innerText}`;
+          doc.text(texto, 10, y);
+          y += 10;
+        }
+      });
+      doc.save("Historial_Pagos.pdf");
+    }
+
+    // MODIFICACIONES EN "SINIESTROS"
+    function generarPDFSiniestros() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Reporte de Siniestros');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const rows = document.querySelectorAll('#tablaSiniestros tr');
+      let y = 40;
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if(cells.length > 0) {
+          const texto = `${index + 1}. ${cells[0].innerText} | ${cells[1].innerText} | ${cells[2].innerText} | ${cells[3].innerText}`;
+          doc.text(texto, 10, y);
+          y += 10;
+        }
+      });
+      doc.save("Reporte_Siniestros.pdf");
+    }
+
+    // Lógica para el modal de Pagos: Mostrar campos adicionales según el método seleccionado
+    document.getElementById('pagoMetodo').addEventListener('change', function() {
+      const metodo = this.value;
+      if(metodo === "tarjeta") {
+        document.getElementById('tarjetaFields').style.display = 'block';
+        document.getElementById('transferenciaFields').style.display = 'none';
+      } else if(metodo === "transferencia") {
+        document.getElementById('transferenciaFields').style.display = 'block';
+        document.getElementById('tarjetaFields').style.display = 'none';
+      } else {
+        document.getElementById('tarjetaFields').style.display = 'none';
+        document.getElementById('transferenciaFields').style.display = 'none';
+      }
+    });
+
+    // Lógica para el modal de Pagos: Registrar el nuevo pago
+    document.getElementById('pagoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const poliza = document.getElementById('pagoPoliza').value;
+      const monto = parseFloat(document.getElementById('pagoMonto').value);
+      const metodo = document.getElementById('pagoMetodo').value;
+      if(monto < 50) {
+        alert("El monto mínimo de pago es $50.");
+        return;
+      }
+      let infoExtra = "";
+      if(metodo === "tarjeta") {
+        const numTarjeta = document.getElementById('tarjetaNumero').value;
+        const expTarjeta = document.getElementById('tarjetaExpiracion').value;
+        const cvv = document.getElementById('tarjetaCVV').value;
+        if(!numTarjeta || !expTarjeta || !cvv) {
+          alert("Complete todos los datos de la tarjeta.");
+          return;
+        }
+        infoExtra = ` - Tarjeta: ${numTarjeta}`;
+      } else if(metodo === "transferencia") {
+        const cuenta = document.getElementById('transferenciaCuenta').value;
+        if(!cuenta) {
+          alert("Ingrese el número de cuenta.");
+          return;
+        }
+        infoExtra = ` - Cuenta: ${cuenta}`;
+      }
+      const fecha = new Date().toISOString().slice(0,10);
+      const tablaPagos = document.getElementById('tablaPagos');
+      const nuevaFila = document.createElement('tr');
+      nuevaFila.innerHTML = `
+        <td>${fecha}</td>
+        <td>${poliza}</td>
+        <td>$${monto}</td>
+        <td>${metodo.charAt(0).toUpperCase() + metodo.slice(1)}${infoExtra}</td>
+        <td>Exitoso</td>
+      `;
+      tablaPagos.appendChild(nuevaFila);
+      alert("Pago procesado y registrado exitosamente.");
+      $('#modalPago').modal('hide');
+      document.getElementById('pagoForm').reset();
+      document.getElementById('tarjetaFields').style.display = 'none';
+      document.getElementById('transferenciaFields').style.display = 'none';
+    });
+
+    // Lógica para el modal de Siniestros: Registrar nuevo siniestro
+    document.getElementById('siniestroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const descripcion = document.getElementById('siniestroDescripcion').value;
+      const fechaSiniestro = document.getElementById('siniestroFecha').value;
+      const tablaSiniestros = document.getElementById('tablaSiniestros');
+      const nuevaFila = document.createElement('tr');
+      nuevaFila.innerHTML = `
+        <td>SIN${(tablaSiniestros.rows.length + 1).toString().padStart(3, '0')}</td>
+        <td>${descripcion}</td>
+        <td>${fechaSiniestro}</td>
+        <td>En Proceso</td>
+      `;
+      tablaSiniestros.appendChild(nuevaFila);
+      alert("Siniestro reportado y registrado exitosamente.");
+      $('#modalSiniestro').modal('hide');
+      document.getElementById('siniestroForm').reset();
+    });
+
+    // Función para ocultar la vista previa PDF en el modal de documentos
+    function ocultarVistaPreviaPDF() {
+      const iframe = document.getElementById('pdfPreview');
+      iframe.style.display = 'none';
+      iframe.src = '';
+    }
+
+    // ---------------------------
+    // FUNCIONES DE AYUDA PARA PDF
+    // ---------------------------
+    function addHeaderAndFooter(doc, documentTitle) {
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      
+      // Encabezado: Fondo azul, logo y título
+      doc.setFillColor(0, 66, 126);
+      doc.rect(0, 0, pageWidth, 30, 'F');
+      try {
+        doc.addImage('images/logo.png', 'PNG', 5, 5, 20, 20);
+      } catch (e) { console.log(e); }
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("V & F Seguros", pageWidth / 2, 15, { align: "center" });
+      doc.setFontSize(12);
+      doc.text(documentTitle, pageWidth / 2, 25, { align: "center" });
+      const fecha = new Date().toLocaleDateString();
+      doc.setFontSize(10);
+      doc.text(`Fecha de Emisión: ${fecha}`, pageWidth - 10, 15, { align: "right" });
+      
+      // Pie de Página: Información de contacto y aviso
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      const footerY = pageHeight - 20;
+      doc.text("V & F Seguros | Tel: +593 912345678 | www.vyfseguros.com", pageWidth / 2, footerY, { align: "center" });
+      doc.text("Confidencial - No distribuir sin autorización", pageWidth / 2, footerY + 5, { align: "center" });
+    }
+
+    function addWatermark(doc) {
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      try { doc.setGState(new doc.GState({ opacity: 0.1 })); } catch(e){}
+      const watermarkWidth = 50, watermarkHeight = 50;
+      const watermarkX = (pageWidth - watermarkWidth) / 2;
+      const watermarkY = (pageHeight - watermarkHeight) / 2;
+      try { doc.addImage('images/logo.png', 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight); } catch(e){}
+      try { doc.setGState(new doc.GState({ opacity: 1 })); } catch(e){}
+    }
+
+    // ---------------------------
+    // FUNCIONES DE PDF PARA CADA SECCIÓN
+    // ---------------------------
+    // Pólizas: Generar PDF de una póliza (modal)
+    function generarPDFPoliza() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Detalle de Póliza');
+      addWatermark(doc);
+      const detalle = document.getElementById('detallePoliza').textContent;
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(detalle, 180);
+      doc.text(lines, 10, 40);
+      doc.save("Detalle_Póliza.pdf");
+    }
+
+    // Pólizas: Generar PDF Reporte General
+    function generarPDFPolizas() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Reporte de Pólizas');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("1. Póliza: ABC123 - Seguro de Auto - Activa", 10, 40);
+      doc.text("2. Póliza: XYZ789 - Seguro de Viaje - Activa", 10, 50);
+      doc.save("Reporte_Pólizas.pdf");
+    }
+
+    // Documentos: Generar PDF de un documento específico
+    function generarPDFDocumento(documento) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, documento);
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("Contenido simulado del documento " + documento, 10, 40);
+      doc.save(documento.replace(/ /g, "_") + ".pdf");
+    }
+
+    // Documentos: Vista Previa PDF (muestra en modal)
+    function vistaPreviaPDFDocumento(documento) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, documento + " - Vista Previa");
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("Contenido simulado del documento " + documento, 10, 40);
+      const dataUriString = doc.output('datauristring');
+      $('#pdfPreview').attr('src', dataUriString).show();
+      $('#modalDocumentoPreview').modal('show');
+    }
+
+    // Pagos: Generar PDF del historial de pagos
+    function generarPDFPagos() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Historial de Pagos');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const rows = document.querySelectorAll('#tablaPagos tr');
+      let y = 40;
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if(cells.length > 0) {
+          const texto = `${index + 1}. ${cells[0].innerText} | ${cells[1].innerText} | ${cells[2].innerText} | ${cells[3].innerText} | ${cells[4].innerText}`;
+          doc.text(texto, 10, y);
+          y += 10;
+        }
+      });
+      doc.save("Historial_Pagos.pdf");
+    }
+
+    // Siniestros: Generar PDF del reporte de siniestros
+    function generarPDFSiniestros() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Reporte de Siniestros');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const rows = document.querySelectorAll('#tablaSiniestros tr');
+      let y = 40;
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if(cells.length > 0) {
+          const texto = `${index + 1}. ${cells[0].innerText} | ${cells[1].innerText} | ${cells[2].innerText} | ${cells[3].innerText}`;
+          doc.text(texto, 10, y);
+          y += 10;
+        }
+      });
+      doc.save("Reporte_Siniestros.pdf");
+    }
+
+    // Lógica para el modal de Pagos: Mostrar campos adicionales según el método seleccionado
+    document.getElementById('pagoMetodo').addEventListener('change', function() {
+      const metodo = this.value;
+      if(metodo === "tarjeta") {
+        document.getElementById('tarjetaFields').style.display = 'block';
+        document.getElementById('transferenciaFields').style.display = 'none';
+      } else if(metodo === "transferencia") {
+        document.getElementById('transferenciaFields').style.display = 'block';
+        document.getElementById('tarjetaFields').style.display = 'none';
+      } else {
+        document.getElementById('tarjetaFields').style.display = 'none';
+        document.getElementById('transferenciaFields').style.display = 'none';
+      }
+    });
+
+    // Lógica para el modal de Pagos: Registrar el nuevo pago
+    document.getElementById('pagoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const poliza = document.getElementById('pagoPoliza').value;
+      const monto = parseFloat(document.getElementById('pagoMonto').value);
+      const metodo = document.getElementById('pagoMetodo').value;
+      if(monto < 50) {
+        alert("El monto mínimo de pago es $50.");
+        return;
+      }
+      let infoExtra = "";
+      if(metodo === "tarjeta") {
+        const numTarjeta = document.getElementById('tarjetaNumero').value;
+        const expTarjeta = document.getElementById('tarjetaExpiracion').value;
+        const cvv = document.getElementById('tarjetaCVV').value;
+        if(!numTarjeta || !expTarjeta || !cvv) {
+          alert("Complete todos los datos de la tarjeta.");
+          return;
+        }
+        infoExtra = ` - Tarjeta: ${numTarjeta}`;
+      } else if(metodo === "transferencia") {
+        const cuenta = document.getElementById('transferenciaCuenta').value;
+        if(!cuenta) {
+          alert("Ingrese el número de cuenta.");
+          return;
+        }
+        infoExtra = ` - Cuenta: ${cuenta}`;
+      }
+      const fecha = new Date().toISOString().slice(0,10);
+      const tablaPagos = document.getElementById('tablaPagos');
+      const nuevaFila = document.createElement('tr');
+      nuevaFila.innerHTML = `
+        <td>${fecha}</td>
+        <td>${poliza}</td>
+        <td>$${monto}</td>
+        <td>${metodo.charAt(0).toUpperCase() + metodo.slice(1)}${infoExtra}</td>
+        <td>Exitoso</td>
+      `;
+      tablaPagos.appendChild(nuevaFila);
+      alert("Pago procesado y registrado exitosamente.");
+      $('#modalPago').modal('hide');
+      document.getElementById('pagoForm').reset();
+      document.getElementById('tarjetaFields').style.display = 'none';
+      document.getElementById('transferenciaFields').style.display = 'none';
+    });
+
+    // Lógica para el modal de Siniestros: Registrar nuevo siniestro
+    document.getElementById('siniestroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const descripcion = document.getElementById('siniestroDescripcion').value;
+      const fechaSiniestro = document.getElementById('siniestroFecha').value;
+      const tablaSiniestros = document.getElementById('tablaSiniestros');
+      const nuevaFila = document.createElement('tr');
+      nuevaFila.innerHTML = `
+        <td>SIN${(tablaSiniestros.rows.length + 1).toString().padStart(3, '0')}</td>
+        <td>${descripcion}</td>
+        <td>${fechaSiniestro}</td>
+        <td>En Proceso</td>
+      `;
+      tablaSiniestros.appendChild(nuevaFila);
+      alert("Siniestro reportado y registrado exitosamente.");
+      $('#modalSiniestro').modal('hide');
+      document.getElementById('siniestroForm').reset();
+    });
+
+    // Función para ocultar la vista previa PDF en el modal de documentos
+    function ocultarVistaPreviaPDF() {
+      const iframe = document.getElementById('pdfPreview');
+      iframe.style.display = 'none';
+      iframe.src = '';
+    }
+
+    // ---------------------------
+    // FUNCIONES DE AYUDA PARA PDF (HEADER, WATERMARK, FOOTER)
+    // ---------------------------
+    function addHeaderAndFooter(doc, documentTitle) {
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      // Encabezado
+      doc.setFillColor(0, 66, 126); // Azul corporativo
+      doc.rect(0, 0, pageWidth, 30, 'F');
+      try { doc.addImage('images/logo.png', 'PNG', 5, 5, 20, 20); } catch(e){ console.log(e); }
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("V & F Seguros", pageWidth / 2, 15, { align: "center" });
+      doc.setFontSize(12);
+      doc.text(documentTitle, pageWidth / 2, 25, { align: "center" });
+      const fecha = new Date().toLocaleDateString();
+      doc.setFontSize(10);
+      doc.text(`Fecha de Emisión: ${fecha}`, pageWidth - 10, 15, { align: "right" });
+      // Pie de Página
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      const footerY = pageHeight - 20;
+      doc.text("V & F Seguros | Tel: +593 912345678 | www.vyfseguros.com", pageWidth / 2, footerY, { align: "center" });
+      doc.text("Confidencial - No distribuir sin autorización", pageWidth / 2, footerY + 5, { align: "center" });
+    }
+
+    function addWatermark(doc) {
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      try { doc.setGState(new doc.GState({ opacity: 0.1 })); } catch(e){}
+      const watermarkWidth = 50, watermarkHeight = 50;
+      const watermarkX = (pageWidth - watermarkWidth) / 2;
+      const watermarkY = (pageHeight - watermarkHeight) / 2;
+      try { doc.addImage('images/logo.png', 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight); } catch(e){}
+      try { doc.setGState(new doc.GState({ opacity: 1 })); } catch(e){}
+    }
+
+    // ---------------------------
+    // FUNCIONES DE PDF PARA CADA SECCIÓN
+    // ---------------------------
+    // Pólizas: Generar PDF de una póliza (modal)
+    function generarPDFPoliza() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Detalle de Póliza');
+      addWatermark(doc);
+      const detalle = document.getElementById('detallePoliza').textContent;
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(detalle, 180);
+      doc.text(lines, 10, 40);
+      doc.save("Detalle_Póliza.pdf");
+    }
+
+    // Pólizas: Generar PDF Reporte General
+    function generarPDFPolizas() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Reporte de Pólizas');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("1. Póliza: ABC123 - Seguro de Auto - Activa", 10, 40);
+      doc.text("2. Póliza: XYZ789 - Seguro de Viaje - Activa", 10, 50);
+      doc.save("Reporte_Pólizas.pdf");
+    }
+
+    // Documentos: Generar PDF de un documento
+    function generarPDFDocumento(documento) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, documento);
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("Contenido simulado del documento " + documento, 10, 40);
+      doc.save(documento.replace(/ /g, "_") + ".pdf");
+    }
+
+    // Documentos: Vista Previa PDF
+    function vistaPreviaPDFDocumento(documento) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, documento + " - Vista Previa");
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      doc.text("Contenido simulado del documento " + documento, 10, 40);
+      const dataUriString = doc.output('datauristring');
+      $('#pdfPreview').attr('src', dataUriString).show();
+      $('#modalDocumentoPreview').modal('show');
+    }
+
+    // Pagos: Generar PDF del Historial de Pagos
+    function generarPDFPagos() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Historial de Pagos');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const rows = document.querySelectorAll('#tablaPagos tr');
+      let y = 40;
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if(cells.length > 0) {
+          const texto = `${index + 1}. ${cells[0].innerText} | ${cells[1].innerText} | ${cells[2].innerText} | ${cells[3].innerText} | ${cells[4].innerText}`;
+          doc.text(texto, 10, y);
+          y += 10;
+        }
+      });
+      doc.save("Historial_Pagos.pdf");
+    }
+
+    // Siniestros: Generar PDF del Reporte de Siniestros
+    function generarPDFSiniestros() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      addHeaderAndFooter(doc, 'Reporte de Siniestros');
+      addWatermark(doc);
+      doc.setFontSize(12);
+      doc.setTextColor(0,0,0);
+      const rows = document.querySelectorAll('#tablaSiniestros tr');
+      let y = 40;
+      rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if(cells.length > 0) {
+          const texto = `${index + 1}. ${cells[0].innerText} | ${cells[1].innerText} | ${cells[2].innerText} | ${cells[3].innerText}`;
+          doc.text(texto, 10, y);
+          y += 10;
+        }
+      });
+      doc.save("Reporte_Siniestros.pdf");
+    }
+
+    // Lógica para el modal de Pagos: Mostrar campos adicionales según el método seleccionado
+    document.getElementById('pagoMetodo').addEventListener('change', function() {
+      const metodo = this.value;
+      if(metodo === "tarjeta") {
+        document.getElementById('tarjetaFields').style.display = 'block';
+        document.getElementById('transferenciaFields').style.display = 'none';
+      } else if(metodo === "transferencia") {
+        document.getElementById('transferenciaFields').style.display = 'block';
+        document.getElementById('tarjetaFields').style.display = 'none';
+      } else {
+        document.getElementById('tarjetaFields').style.display = 'none';
+        document.getElementById('transferenciaFields').style.display = 'none';
+      }
+    });
+
+    // Lógica para el modal de Pagos: Registrar el nuevo pago
+    document.getElementById('pagoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const poliza = document.getElementById('pagoPoliza').value;
+      const monto = parseFloat(document.getElementById('pagoMonto').value);
+      const metodo = document.getElementById('pagoMetodo').value;
+      if(monto < 50) {
+        alert("El monto mínimo de pago es $50.");
+        return;
+      }
+      let infoExtra = "";
+      if(metodo === "tarjeta") {
+        const numTarjeta = document.getElementById('tarjetaNumero').value;
+        const expTarjeta = document.getElementById('tarjetaExpiracion').value;
+        const cvv = document.getElementById('tarjetaCVV').value;
+        if(!numTarjeta || !expTarjeta || !cvv) {
+          alert("Complete todos los datos de la tarjeta.");
+          return;
+        }
+        infoExtra = ` - Tarjeta: ${numTarjeta}`;
+      } else if(metodo === "transferencia") {
+        const cuenta = document.getElementById('transferenciaCuenta').value;
+        if(!cuenta) {
+          alert("Ingrese el número de cuenta.");
+          return;
+        }
+        infoExtra = ` - Cuenta: ${cuenta}`;
+      }
+      const fecha = new Date().toISOString().slice(0,10);
+      const tablaPagos = document.getElementById('tablaPagos');
+      const nuevaFila = document.createElement('tr');
+      nuevaFila.innerHTML = `
+        <td>${fecha}</td>
+        <td>${poliza}</td>
+        <td>$${monto}</td>
+        <td>${metodo.charAt(0).toUpperCase() + metodo.slice(1)}${infoExtra}</td>
+        <td>Exitoso</td>
+      `;
+      tablaPagos.appendChild(nuevaFila);
+      alert("Pago procesado y registrado exitosamente.");
+      $('#modalPago').modal('hide');
+      document.getElementById('pagoForm').reset();
+      document.getElementById('tarjetaFields').style.display = 'none';
+      document.getElementById('transferenciaFields').style.display = 'none';
+    });
+
+    // Lógica para el modal de Siniestros: Registrar nuevo siniestro
+    document.getElementById('siniestroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const descripcion = document.getElementById('siniestroDescripcion').value;
+      const fechaSiniestro = document.getElementById('siniestroFecha').value;
+      const tablaSiniestros = document.getElementById('tablaSiniestros');
+      const nuevaFila = document.createElement('tr');
+      nuevaFila.innerHTML = `
+        <td>SIN${(tablaSiniestros.rows.length + 1).toString().padStart(3, '0')}</td>
+        <td>${descripcion}</td>
+        <td>${fechaSiniestro}</td>
+        <td>En Proceso</td>
+      `;
+      tablaSiniestros.appendChild(nuevaFila);
+      alert("Siniestro reportado y registrado exitosamente.");
+      $('#modalSiniestro').modal('hide');
+      document.getElementById('siniestroForm').reset();
+    });
+  </script>
+</body>
+</html>

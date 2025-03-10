@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <!-- Configuración para móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <!-- Metadatos del sitio -->
+  <meta name="keywords" content="seguros, cotización, bróker de seguros, V & F Seguros"/>
+  <meta name="description" content="Solicita una cotización personalizada de seguros con V & F Seguros. Obtén la mejor opción para proteger lo que más valoras."/>
+  <meta name="author" content="V & F Seguros"/>
+
+  <title>V & F Seguros - Cotizador</title>
+
+  <!-- Hoja de estilos del slider -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css"/>
+  <!-- CSS central de Bootstrap -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,500|Poppins:400,700&amp;display=swap" rel="stylesheet"/>
+  <!-- Estilos personalizados -->
+  <link href="css/style.css" rel="stylesheet"/>
+  <!-- Estilo responsivo -->
+  <link href="css/responsive.css" rel="stylesheet"/>
+  
+  <style>
+    /* Estilos para el mensaje de confirmación */
+    #mensajeConfirmacion {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #28a745;
+      background-color: #d4edda;
+      color: #155724;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body class="sub_page">
+  <!-- Inicio de la cabecera -->
+  <div class="hero_area">
+    <header class="header_section">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+              <a class="navbar-brand" href="index.html">
+                <span>
+                  V & F Seguros
+                </span>
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" 
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="d-flex  flex-column flex-lg-row align-items-center">
+                  <ul class="navbar-nav  ">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="index.html">Inicio <span class="sr-only">(actual)</span></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="nosotros.html">Nosotros </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="servicios.html">Servicios </a>
+                    </li>
+                    <li class="nav-item active">
+                      <a class="nav-link" href="cotizador.html">Cotizador <span class="sr-only">(actual)</span></a>
+                    </li>                    
+                    <li class="nav-item">
+                      <a class="nav-link" href="contacto.html">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="ingresar.html"> Ingresar</a>
+                    </li>
+                  </ul>
+                  <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                    <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+                  </form>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+  <!-- Fin de la cabecera -->
+
+  <!-- Sección del Cotizador -->
+  <section class="contact_section layout_padding">
+    <div class="container contact_heading">
+      <h2>Obtén tu Cotización</h2>
+      <p>Completa el siguiente formulario y uno de nuestros asesores se pondrá en contacto contigo para ofrecerte la mejor opción de seguro.</p>
+    </div>
+    <div class="container">
+      <!-- Formulario de cotización -->
+      <form id="cotizacionForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputNombre">Nombre</label>
+            <input type="text" class="form-control" id="inputNombre" name="nombre" placeholder="Tu nombre" required/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputApellido">Apellido</label>
+            <input type="text" class="form-control" id="inputApellido" name="apellido" placeholder="Tu apellido" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail">Correo</label>
+            <input type="email" class="form-control" id="inputEmail" name="email" placeholder="tu@ejemplo.com" required/>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputTelefono">Número de Teléfono</label>
+            <input type="tel" class="form-control" id="inputTelefono" name="telefono" placeholder="+593 9XXXXXXXX" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputServicio">Selecciona el Tipo de Seguro</label>
+            <select id="inputServicio" name="tipo_seguro" class="form-control" required>
+              <option value="">-- Selecciona un seguro --</option>
+              <option value="auto">Seguro de Auto</option>
+              <option value="viaje">Seguro de Viaje</option>
+              <option value="desastres">Seguro de Desastres Naturales</option>
+              <option value="jubilacion">Seguro de Jubilación</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputCobertura">Cobertura Aproximada</label>
+            <input type="number" class="form-control" id="inputCobertura" name="cobertura" placeholder="Monto en USD o UDS" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputMensaje">Comentarios / Detalles Adicionales</label>
+          <textarea class="form-control" id="inputMensaje" name="mensaje" rows="4" placeholder="Escribe aquí tus comentarios o dudas"></textarea>
+        </div>
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary">Enviar Cotización</button>
+        </div>
+      </form>
+      <!-- Mensaje de confirmación -->
+      <div id="mensajeConfirmacion">
+        ¡Gracias por solicitar tu cotización! Nos pondremos en contacto contigo muy pronto.
+      </div>
+    </div>
+  </section>
+  <!-- Fin de la sección del Cotizador -->
+
+  <!-- Footer -->
+  <div class="footer_bg">
+    <section class="info_section layout_padding2-bottom">
+      <div class="container">
+        <h3>V & F Seguros</h3>
+      </div>
+      <div class="container info_content">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="d-flex">
+              <h5>Enlaces Útiles</h5>
+            </div>
+            <ul>
+              <li><a href="nosotros.html">Sobre Nosotros</a></li>
+              <li><a href="servicios.html">Servicios</a></li>
+              <li><a href="contacto.html">Contacto</a></li>
+              <li><a href="cotizador.html">Cotizador</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex">
+              <h5>Información Legal</h5>
+            </div>
+            <ul>
+              <li><a href="privacidad.html">Política de Privacidad</a></li>
+              <li><a href="terminos.html">Términos y Condiciones</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex">
+              <h5>Contáctanos</h5>
+            </div>
+            <ul>
+              <li><a href="tel:+593912345678">Teléfono: +593 912345678</a></li>
+              <li><a href="mailto:info@vyfseguros.com">Correo: info@vyfseguros.com</a></li>
+              <li><a href="#">Oficinas</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center align-items-lg-baseline">
+          <div class="social-box">
+            <a href="#"><img src="images/fb.png" alt="Facebook"/></a>
+            <a href="#"><img src="images/twitter.png" alt="Twitter"/></a>
+            <a href="#"><img src="images/linkedin1.png" alt="LinkedIn"/></a>
+            <a href="#"><img src="images/instagram1.png" alt="Instagram"/></a>
+          </div>
+          <div class="form_container mt-5">
+            <form action="#">
+              <label for="subscribeMail">Boletín Informativo</label>
+              <input type="email" placeholder="Ingresa tu correo" id="subscribeMail"/>
+              <button type="submit">Suscribirse</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="container-fluid footer_section">
+      <p>© 2025 Todos los Derechos Reservados por <a href="#">V & F Seguros</a></p>
+    </section>
+  </div>
+  <!-- Fin del Footer -->
+
+  <!-- Scripts -->
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  
+  <!-- Script para manejar el formulario de cotización sin base de datos -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('cotizacionForm');
+      const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+      
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Evita el envío tradicional del formulario
+        
+        // Simulación del procesamiento de los datos (por ejemplo, guardarlos en memoria o simplemente mostrar el mensaje)
+        console.log("Datos de la cotización:", {
+          nombre: document.getElementById('inputNombre').value,
+          apellido: document.getElementById('inputApellido').value,
+          email: document.getElementById('inputEmail').value,
+          telefono: document.getElementById('inputTelefono').value,
+          tipo_seguro: document.getElementById('inputServicio').value,
+          cobertura: document.getElementById('inputCobertura').value,
+          mensaje: document.getElementById('inputMensaje').value,
+          fecha_solicitud: new Date().toISOString(),
+          estado: 'nuevo'
+        });
+        
+        // Simulación exitosa: reinicia el formulario y muestra un mensaje de confirmación
+        form.reset();
+        mensajeConfirmacion.style.display = 'block';
+        setTimeout(() => {
+          mensajeConfirmacion.style.display = 'none';
+        }, 5000);
+      });
+    });
+  </script>
+</body>
+</html>
